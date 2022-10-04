@@ -13,8 +13,8 @@ library(NCC)
 ##########################################
 # Optimal allocations
 ##########################################
+# for case 3
 
-# Case 3
 Power=function(x,y)x^y
 
 eq=function(r22,r1=0.1,r2=0.8) (r1 + ((Power(r2,2) - 4*r2*r22 + 2*Power(r22,2))*Power(Power(r2,2) - 2*r2*r22 + 2*Power(r22,2),2))/(Power(r2,2)*Power(r2 - r22,3)) - (1-r1-r2))/4.
@@ -78,8 +78,6 @@ sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
     }
     
   }
-  
-  
   # c(r11,r01)
   
   n11 = round(r11*N)
@@ -199,12 +197,16 @@ mean_arm2 = 72.3/3.5
 db1_one = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
 db1_sqrt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
 db1_opt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+
 # head(db)
+mod <- lm(response ~ as.factor(treatment), db1_sqrt)
+summary(mod)
+
 plot_trial(db1_opt$treatment) 
 
-(res_one = do.call(rbind.data.frame, models(data = db1_one) ))
-(res_sqrt = do.call(rbind.data.frame, models(data = db1_sqrt) ))
-(res_opt = do.call(rbind.data.frame, models(data = db1_opt) ))
+(res1_one = do.call(rbind.data.frame, models(data = db1_one) ))
+(res1_sqrt = do.call(rbind.data.frame, models(data = db1_sqrt) ))
+(res1_opt = do.call(rbind.data.frame, models(data = db1_opt) ))
 
 # design 2: two-period design
 db2_one=sim_designs(r1=n_arm1/N,r2=1-n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
@@ -213,9 +215,9 @@ db2_opt=sim_designs(r1=n_arm1/N,r2=1-n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2
 
 plot_trial(db2_opt$treatment) 
 
-(res_one = do.call(rbind.data.frame, models(data = db2_one) ))
-(res_sqrt = do.call(rbind.data.frame, models(data = db2_sqrt) ))
-(res_opt = do.call(rbind.data.frame, models(data = db2_opt) ))
+(res2_one = do.call(rbind.data.frame, models(data = db2_one) ))
+(res2_sqrt = do.call(rbind.data.frame, models(data = db2_sqrt) ))
+(res2_opt = do.call(rbind.data.frame, models(data = db2_opt) ))
 
 # design 3: three-period design
 db3_one=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
@@ -224,9 +226,9 @@ db3_opt=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,m
 
 plot_trial(db3_opt$treatment) 
 
-(res_one = do.call(rbind.data.frame, models(data = db3_one) ))
-(res_sqrt = do.call(rbind.data.frame, models(data = db3_sqrt) ))
-(res_opt = do.call(rbind.data.frame, models(data = db3_opt) ))
+(res3_one = do.call(rbind.data.frame, models(data = db3_one) ))
+(res3_sqrt = do.call(rbind.data.frame, models(data = db3_sqrt) ))
+(res3_opt = do.call(rbind.data.frame, models(data = db3_opt) ))
 
 
 
