@@ -93,6 +93,7 @@ sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
   n23 = round(r23*N)
   n03 = round(r03*N)
   
+  # c(r11,r01,r22,r12,r02,r23,r03)
   # c(n11,n01,n22,n12,n02,n23,n03)
   
   means = c(mu0,mu1,mu2)
@@ -129,7 +130,7 @@ sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
 # r1=20/70;r2=30/70;mu0=0;mu1=1;mu2=1;N=70;alloc="opt"
 db=sim_designs(r1=20/70,r2=30/70,mu0=0,mu1=1,mu2=1,N=70,alloc="one")
 head(db)
-plot_trial(db$treatment) 
+plot_trial(db$data$treatment) 
 
 db=sim_designs(r1=20/70,r2=30/70,mu0=0,mu1=1,mu2=1,N=70,alloc="opt")
 head(db$data)
@@ -142,6 +143,39 @@ plot_trial(db$data$treatment)
 # # NCC pkg functions 
 # fixmodel_cont(data=db,arm=2,alpha=0.025) #model using ncc
 # sepmodel_adj_cont(data=db,arm=1,alpha=0.025) #model using cc only
+
+models <- function(data,alpha=0.025){
+  
+  # using concurrent controls only
+  
+  ls_a1=sepmodel_adj_cont(data,arm=1,alpha=alpha)
+  ls_a1[[6]]<- "a1"
+  names(ls_a1)[[6]] <- "arm"
+  ls_a1[[7]] <- "cc"
+  names(ls_a1)[7] <- "model"
+  
+  ls_a2=sepmodel_adj_cont(data,arm=2,alpha=alpha)
+  ls_a2[[6]] <- "a2"
+  names(ls_a2)[[6]] <- "arm"
+  ls_a2[[7]] <- "cc"
+  names(ls_a2)[7] <- "model"
+  
+  # using concurrent and non-concurrent controls
+  
+  lf_a1=fixmodel_cont(data,arm=1,alpha=alpha)
+  lf_a1[[6]] <- "a1"
+  names(lf_a1)[[6]] <- "arm"
+  lf_a1[[7]] <- "ncc"
+  names(lf_a1)[7] <- "model"
+  
+  lf_a2=fixmodel_cont(data,arm=2,alpha=alpha)
+  lf_a2[[6]] <- "a2"
+  names(lf_a2)[[6]] <- "arm"
+  lf_a2[[7]] <- "ncc"
+  names(lf_a2)[7] <- "model"
+  
+  return(list(ls_a1,ls_a2,lf_a1,lf_a2))
+}
 
 models_cc <- function(data,alpha=0.025){
 
@@ -157,41 +191,13 @@ models_cc <- function(data,alpha=0.025){
   ls_a2[[6]] <- "a2"
   names(ls_a2)[[6]] <- "arm"
   # ls_a2[[7]] <- "cc"
-  # names(ls_a2)[7] <- "model" 
-  
-  # using concurrent and non-concurrent controls
-  
-  # lf_a1=fixmodel_cont(data,arm=1,alpha=alpha)
-  # lf_a1[[6]] <- "ncc"
-  # names(lf_a1)[6] <- "model" 
-  # lf_a1[[7]] <- "a1"
-  # names(lf_a1)[[7]] <- "arm"
-  # 
-  # lf_a2=fixmodel_cont(data,arm=2,alpha=alpha)
-  # lf_a2[[6]] <- "ncc"
-  # names(lf_a2)[6] <- "model" 
-  # lf_a2[[7]] <- "a2"
-  # names(lf_a2)[[7]] <- "arm"
+  # names(ls_a2)[7] <- "model"  
   
   return(list(ls_a1,ls_a2))
 }
 
 
-models_ncc <- function(data,alpha=0.025){
-  
-  # using concurrent controls only
-  
-  # ls_a1=sepmodel_adj_cont(data,arm=1,alpha=alpha)
-  # ls_a1[[6]]<- "a1"
-  # names(ls_a1)[[6]] <- "arm"
-  # ls_a1[[7]] <- "cc"
-  # names(ls_a1)[7] <- "model" 
-  # 
-  # ls_a2=sepmodel_adj_cont(data,arm=2,alpha=alpha)
-  # ls_a2[[6]] <- "a2"
-  # names(ls_a2)[[6]] <- "arm"
-  # ls_a2[[7]] <- "cc"
-  # names(ls_a2)[7] <- "model" 
+models_ncc <- function(data,alpha=0.025){ 
   
   # using concurrent and non-concurrent controls
   
@@ -269,10 +275,10 @@ db2_opt$ss
 (res2_sqrt = do.call(rbind.data.frame, models_cc(data = db2_sqrt$data) ))
 (res2_opt = do.call(rbind.data.frame, models_cc(data = db2_opt$data) ))
 
-# design 3: three-period design
+# design 3: three-period design (symmetric design)
 db3_one=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
-db3_sqrt=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
-db3_opt=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
+db3_sqrt=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
+db3_opt=sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
 
 plot_trial(db3_opt$data$treatment) 
 
@@ -286,31 +292,72 @@ db3_opt$ss
 (res3_opt = do.call(rbind.data.frame, models_cc(data = db3_opt$data) ))
 
 
-# simulations
+# design 3: three-period design (non-symmetric design)
+db3b_one=sim_designs(r1=n_arm1/N,r2=n_arm1/N/2,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
+db3b_sqrt=sim_designs(r1=n_arm1/N,r2=n_arm1/N/2,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
+db3b_opt=sim_designs(r1=n_arm1/N,r2=n_arm1/N/2,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+
+plot_trial(db3b_opt$data$treatment) 
+
+# r1=n_arm1/N;r2=n_arm1/N/2;alloc="sqrt"
+# sample sizes
+db3b_one$ss
+db3b_sqrt$ss
+db3b_opt$ss
+
+(res3b_one = do.call(rbind.data.frame, models_cc(data = db3b_one$data) ))
+(res3b_sqrt = do.call(rbind.data.frame, models_cc(data = db3b_sqrt$data) ))
+(res3b_opt = do.call(rbind.data.frame, models_cc(data = db3b_opt$data) ))
+
+
+##########################################
+# Simulations
+##########################################
+
 library(dplyr)
 nsim=10000
+
+N=50
+n_arm1=N/3
+
 y = rdply(nsim,
           do.call(rbind.data.frame,
-                  models_cc(data = sim_designs(r1=n_arm1/N,r2=1-2*n_arm1/N,
-                                               mu0=mean_control,mu1=mean_arm2,mu2=mean_arm2,
+                  models_cc(data = sim_designs(r1=n_arm1/N,r2=n_arm1/N/2,
+                                               mu0=mean_control,mu1=6,mu2=7,
                                                N=N,alloc="one")$data
                             )
                   )
-          )
-        
+          ) 
 
-# (y_a1 = filter(y, arm == "a1"))
-
+# t1e / power
 y1_t1e <- y %>% 
   filter(arm == "a1") %>%
-  select(reject_h0) 
-
-sum(y_t1e)/nsim
-
+  select(reject_h0)  
+sum(y1_t1e)/nsim
 
 y2_t1e <- y %>% 
   filter(arm == "a2") %>%
   select(reject_h0) 
+sum(y2_t1e)/nsim
 
+
+y_opt = rdply(nsim,
+          do.call(rbind.data.frame,
+                  models_cc(data = sim_designs(r1=n_arm1/N,r2=n_arm1/N/2,
+                                               mu0=mean_control,mu1=6,mu2=7,
+                                               N=N,alloc="opt")$data
+                  )
+          )
+) 
+
+# t1e / power
+y1_t1e <- y_opt %>% 
+  filter(arm == "a1") %>%
+  select(reject_h0)  
+sum(y1_t1e)/nsim
+
+y2_t1e <- y_opt %>% 
+  filter(arm == "a2") %>%
+  select(reject_h0) 
 sum(y2_t1e)/nsim
 
