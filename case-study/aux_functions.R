@@ -117,7 +117,11 @@ sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
                    sd=1) 
   
   data = data.frame(response,treatment,period)
-  ss = matrix(c(0,n11,n01,n22,n12,n02,n23,0,n03), nrow=3)
+  if(r1==1){
+    ss = matrix(c(n22,n11,n01,0,n12,n02,n23,0,n03), nrow=3)
+  }else{
+    ss = matrix(c(0,n11,n01,n22,n12,n02,n23,0,n03), nrow=3)
+  }
   return(list(data=data,ss=ss))
 }
 
