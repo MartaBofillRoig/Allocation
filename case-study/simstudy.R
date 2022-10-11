@@ -8,20 +8,27 @@
 
 rm(list = ls())
 
+setwd("~/GitHub/Allocation/case-study")
+
+
+library(tidyverse)
+library(dplyr)
 # install.packages("plyr")
 library(plyr)
 # devtools::install_github("pavlakrotka/NCC@v1.0")
 library(NCC)
-
 # devtools::install_github("ianmoran11/mmtable2")
 library(mmtable2)
+# install.packages("gt")
 library(gt)
-library(tidyverse)
 
 
 ##########################################
 # Functions
-source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R")
+
+# source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+source("~/GitHub/Allocation/case-study/aux_functions.R") #server
+
 ##########################################
 
 # syntaxix 
@@ -51,10 +58,15 @@ mean_arm2 = 72.3/3.5
 # Simulations
 ##########################################
 
-library(dplyr)
-# nsim=100000 
+
+# nsim=100000
 nsim=10
 
+set.seed(4561)
+df_res = data.frame(rt=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),arm="a1",H0=F)
+i=1
+
+##########################################
 N = 80
 N1 = round(N/3)
 N2 = round(2*(N-N1)/3)
@@ -72,13 +84,6 @@ db3_opt_ss <- data.frame(arms=c("A1","A2","C"), db3_opt$ss, c(sum(db3_opt$ss[1,]
 knitr::kable(db3_one_ss, format = "markdown", caption = c("Sample sizes per period and arm (1:1)"), col.names = c("Arms", "Period 1","Period 2","Period 3", "Total per arm"))
 knitr::kable(db3_sqrt_ss, format = "markdown", caption = c("Sample sizes per period and arm (sqrt(k)-rule)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
 knitr::kable(db3_opt_ss, format = "markdown", caption = c("Sample sizes per period and arm (optimal allocations)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
-
-
-##########################################
-
-set.seed(4561)
-df_res = data.frame(rt=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),arm="a1",H0=F)
-i=1
 
 ##########################################
 # Power comparison
@@ -281,5 +286,29 @@ df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
 list_res_H0 = list(y,y_opt,y_sqrt)
 
 ##########################################
-# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results.R.RData")
+# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results.R.RData") #local
+save.image("~/GitHub/Allocation/case-study/simstudy_results.R.RData") #server
+
+##########################################
+##########################################
+
+
+N = 80
+N1 = round(N/3)
+N2 = round(N-N1)
+c(N1,N2,N-N1-N2)
+
+# design 2: two-period design 
+db2_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
+db2_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
+db2_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+
+db2_one_ss <- data.frame(arms=c("A1","A2","C"),db2_one$ss, c(sum(db2_one$ss[1,]),sum(db2_one$ss[2,]),sum(db2_one$ss[3,])))
+db2_sqrt_ss <- data.frame(arms=c("A1","A2","C"), db2_sqrt$ss, c(sum(db2_sqrt$ss[1,]),sum(db2_sqrt$ss[2,]),sum(db2_sqrt$ss[3,])))
+db2_opt_ss <- data.frame(arms=c("A1","A2","C"), db2_opt$ss, c(sum(db2_opt$ss[1,]),sum(db2_opt$ss[2,]),sum(db2_opt$ss[3,])))
+
+knitr::kable(db2_one_ss, format = "markdown", caption = c("Sample sizes per period and arm (1:1)"), col.names = c("Arms", "Period 1","Period 2","Period 3", "Total per arm"))
+knitr::kable(db2_sqrt_ss, format = "markdown", caption = c("Sample sizes per period and arm (sqrt(k)-rule)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
+knitr::kable(db2_opt_ss, format = "markdown", caption = c("Sample sizes per period and arm (optimal allocations)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
+
 
