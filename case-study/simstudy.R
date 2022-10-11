@@ -52,7 +52,8 @@ mean_arm2 = 72.3/3.5
 ##########################################
 
 library(dplyr)
-nsim=100000 
+# nsim=100000 
+nsim=10
 
 N = 80
 N1 = round(N/3)
@@ -72,6 +73,15 @@ knitr::kable(db3_one_ss, format = "markdown", caption = c("Sample sizes per peri
 knitr::kable(db3_sqrt_ss, format = "markdown", caption = c("Sample sizes per period and arm (sqrt(k)-rule)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
 knitr::kable(db3_opt_ss, format = "markdown", caption = c("Sample sizes per period and arm (optimal allocations)"), col.names = c("Arms","Period 1","Period 2","Period 3", "Total per arm"))
 
+
+##########################################
+
+set.seed(4561)
+df_res = data.frame(rt=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),arm="a1",H0=F)
+i=1
+
+##########################################
+# Power comparison
 ##########################################
 # 1:1 allocation
 y = rdply(nsim,
@@ -89,13 +99,21 @@ head(y)
 y1_t1e <- y %>% 
   filter(arm == "a1") %>%
   select(reject_h0)  
-sum(y1_t1e)/nsim
+e1_t1e <- sum(y1_t1e)/nsim
 
 y2_t1e <- y %>% 
   filter(arm == "a2") %>%
   select(reject_h0) 
-sum(y2_t1e)/nsim
+e2_t1e <- sum(y2_t1e)/nsim
 
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="one",arm="a1",H0=F)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="one",arm="a2",H0=F)
+
+i=i+2
 ##########################################
 # optimal allocation
 y_opt = rdply(nsim,
@@ -111,13 +129,21 @@ y_opt = rdply(nsim,
 y1_t1e <- y_opt %>% 
   filter(arm == "a1") %>%
   select(reject_h0)  
-sum(y1_t1e)/nsim
+e1_t1e <- sum(y1_t1e)/nsim
 
 y2_t1e <- y_opt %>% 
   filter(arm == "a2") %>%
   select(reject_h0) 
-sum(y2_t1e)/nsim
+e2_t1e <- sum(y2_t1e)/nsim
 
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="opt",arm="a1",H0=F)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="opt",arm="a2",H0=F)
+
+i=i+2
 
 ##########################################
 # sqrt k allocation
@@ -135,12 +161,124 @@ y_sqrt = rdply(nsim,
 y1_t1e <- y_sqrt %>% 
   filter(arm == "a1") %>%
   select(reject_h0)  
-sum(y1_t1e)/nsim
+e1_t1e <- sum(y1_t1e)/nsim
 
 y2_t1e <- y_sqrt %>% 
   filter(arm == "a2") %>%
   select(reject_h0) 
-sum(y2_t1e)/nsim
+e2_t1e <- sum(y2_t1e)/nsim
+
+
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="sqrt",arm="a1",H0=F)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="sqrt",arm="a2",H0=F)
+
+i=i+2
+
+list_res_H1 = list(y,y_opt,y_sqrt)
+
+##########################################
+##########################################
+# T1E comparison
+##########################################
+# 1:1 allocation
+y = rdply(nsim,
+          do.call(rbind.data.frame,
+                  models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
+                                               mu0=mean_control,mu1=mean_control,mu2=mean_control,
+                                               N=N,alloc="one")$data
+                  )
+          )
+) 
+
+head(y)
+
+# t1e / power
+y1_t1e <- y %>% 
+  filter(arm == "a1") %>%
+  select(reject_h0)  
+e1_t1e <- sum(y1_t1e)/nsim
+
+y2_t1e <- y %>% 
+  filter(arm == "a2") %>%
+  select(reject_h0) 
+e2_t1e <- sum(y2_t1e)/nsim
+
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=mean_control,mu2=mean_control,
+             N=N,alloc="one",arm="a1",H0=T)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=mean_control,mu2=mean_control,
+             N=N,alloc="one",arm="a2",H0=T)
+
+i=i+2
+
+##########################################
+# optimal allocation
+y_opt = rdply(nsim,
+              do.call(rbind.data.frame,
+                      models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
+                                                   mu0=mean_control,mu1=mean_control,mu2=mean_control,
+                                                   N=N,alloc="opt")$data
+                      )
+              )
+) 
+
+# t1e / power
+y1_t1e <- y_opt %>% 
+  filter(arm == "a1") %>%
+  select(reject_h0)  
+e1_t1e <- sum(y1_t1e)/nsim
+
+y2_t1e <- y_opt %>% 
+  filter(arm == "a2") %>%
+  select(reject_h0) 
+e2_t1e <- sum(y2_t1e)/nsim
+
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="opt",arm="a1",H0=T)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=7,mu2=7,
+             N=N,alloc="opt",arm="a2",H0=T)
+
+i=i+2
+
+##########################################
+# sqrt k allocation
+
+y_sqrt = rdply(nsim,
+               do.call(rbind.data.frame,
+                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
+                                                    mu0=mean_control,mu1=mean_control,mu2=mean_control,
+                                                    N=N,alloc="sqrt")$data
+                       )
+               )
+) 
+
+# t1e / power
+y1_t1e <- y_sqrt %>% 
+  filter(arm == "a1") %>%
+  select(reject_h0)  
+e1_t1e <- sum(y1_t1e)/nsim
+
+y2_t1e <- y_sqrt %>% 
+  filter(arm == "a2") %>%
+  select(reject_h0) 
+e2_t1e <- sum(y2_t1e)/nsim
+
+
+df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=mean_control,mu2=mean_control,
+             N=N,alloc="sqrt",arm="a1",H0=T)
+df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
+             mu0=mean_control,mu1=mean_control,mu2=mean_control,
+             N=N,alloc="sqrt",arm="a2",H0=T)
+
+list_res_H0 = list(y,y_opt,y_sqrt)
 
 ##########################################
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results.R.RData")
