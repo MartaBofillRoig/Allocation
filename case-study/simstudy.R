@@ -1,7 +1,7 @@
 
 ##########################################
 # Optimal allocation
-# Case study
+# Simulation study
 # 2022-Oct
 # Marta Bofill Roig
 ##########################################
@@ -327,7 +327,7 @@ list_res_H0 = list(y,y_opt,y_sqrt)
 
 ##########################################
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results.R.RData") #local
-save.image("~/GitHub/Allocation/case-study/simstudy_results_part1.RData") #server
+# save.image("~/GitHub/Allocation/case-study/simstudy_results_part1.RData") #server
 
 ##########################################
 ##########################################
@@ -595,7 +595,23 @@ df_res
 list_restwop_H0 = list(y,y_opt,y_sqrt)
 
 ##########################################
-# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results.R.RData") #local
-save.image("~/GitHub/Allocation/case-study/simstudy_results.RData") #server
+rm(db2_one, 
+   db2_opt, 
+   db2_sqrt,
+   db2_one_ss,
+   db2_opt_ss,
+   db2_sqrt_ss,
+   db3_one, 
+   db3_opt, 
+   db3_sqrt,
+   db3_one_ss, 
+   db3_opt_ss, 
+   db3_sqrt_ss,
+   y, y_opt, y_sqrt,
+   y1_t1e, y2_t1e,
+   e1_t1e, e2_t1e, i, mean_arm1, mean_arm2, mean_control, N, N1, N2, nsim)
+##########################################
+# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results.RData") #local
+# save.image("~/GitHub/Allocation/case-study/simstudy_results.RData") #server
 
 
