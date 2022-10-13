@@ -58,17 +58,15 @@ N = 80
 # c(N1,N2,N-N1-N2)
 ```
 
-In the original study, $N=92$ patients were randomised to the three arms following 1:1:1. 
-
-
-In what follows, we used this trial as a motivating study to describe how the patients would have been allocated to the different arms and periods using three allocation strategies -namely, equal allocation (1:...:1), square root of $k$ (1:...:$\sqrt(k)$), and the proposed optimal allocations-, and according to three different trial designs:
+In the original study, patients were randomised to the three arms following 1:1:1. 
+In what follows, we used this trial as a motivating study to describe how the patients would have been allocated to the different arms and periods using three allocation strategies -namely, equal allocation (1:...:1), square root of $k$ (1:...:$\sqrt(k)$) and the proposed optimal allocations-, and according to three different trial designs:
 
   (1) Design with one period only (that is, multi-arm design)
   (2) Design with two periods (arm 2 starts later, but arms 1 and 2 finish at the same time)
   (3) Design with three periods (arm 2 starts later and finishes after arm 1 does)
 
 We also compare the power and type 1 error by means of simulations where we considered the estimated mean in the control arm in the original study.
-For comparative purposes, in this case study, we suppose total sample size of $N=80$ and smaller effect sizes. 
+For comparative purposes, in this case study, we suppose total sample size of $N=80$ and equal effect sizes for arms 1 and 2 as compared to control. 
 Also, we considered a trial using concurrent controls only.
 
 ```{r} 
@@ -92,7 +90,7 @@ db1_opt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N
 plot_trial(db1_one$data$treatment) 
 ```
 
-Distribution of sample sizes per arm and periods
+<!-- Distribution of sample sizes per arm and periods -->
 ```{r}
 # sample sizes
 db1_one$ss

@@ -1,7 +1,7 @@
 
 ##########################################
 # Optimal allocation
-# Case study
+# Variance
 # 2022-Oct
 # Marta Bofill Roig
 ##########################################
@@ -30,11 +30,7 @@ x<-f(r1=20/70,r2=30/70)
 
 ##########################################
 # Variance comparison
-##########################################
-
-# lower=0, upper=1, extendInt = "yes"
-
-Power=function(x,y)x^y
+########################################## 
 
 cond_eq <- function(r22,r12,r1,r2){
   r1/4 + r12 + Power(r12,2)/(-r2 + r22) + r22*(-1 - r22/(r12 - r2)) - (1-r1-r2)/4
@@ -45,9 +41,11 @@ inv_var <- function(r12,r1,r2,eps=0.0001){
   r3 <- 1 - r1 - r2 
   r11 <- r01 <- r1/2
   r23 <- r03 <- r3/2
-  r22 <- tryCatch(uniroot(cond_eq,c(0,r2-eps),r12=r12,r1=r1,r2=r2)$root, error=NA)  
+  r22 <- try(uniroot(cond_eq,c(0,r2-eps),r12=r12,r1=r1,r2=r2)$root,silent=T)
+  # r22 <- tryCatch(uniroot(cond_eq,c(0,r2-eps),r12=r12,r1=r1,r2=r2)$root, error=NA)
+  # r22 <- uniroot(cond_eq,c(0,r2-eps),r12=r12,r1=r1,r2=r2)$root
   
-  if(is.na(r22)){
+  if(is.character(r22)){
     r02<-NA
     term1<-NA
   }else{
