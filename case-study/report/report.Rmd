@@ -58,7 +58,18 @@ N = 80
 # c(N1,N2,N-N1-N2)
 ```
 
-In the original study, $N=92$ patients were randomised following 1:1:1. 
+In the original study, $N=92$ patients were randomised to the three arms following 1:1:1. 
+
+
+In what follows, we used this trial as a motivating study to describe how the patients would have been allocated to the different arms and periods using three allocation strategies -namely, equal allocation (1:...:1), square root of $k$ (1:...:$\sqrt(k)$), and the proposed optimal allocations-, and according to three different trial designs:
+
+  (1) Design with one period only (that is, multi-arm design)
+  (2) Design with two periods (arm 2 starts later, but arms 1 and 2 finish at the same time)
+  (3) Design with three periods (arm 2 starts later and finishes after arm 1 does)
+
+We also compare the power and type 1 error by means of simulations where we considered the estimated mean in the control arm in the original study.
+For comparative purposes, in this case study, we suppose total sample size of $N=80$ and smaller effect sizes. 
+Also, we considered a trial using concurrent controls only.
 
 ```{r} 
 # means
@@ -68,14 +79,7 @@ mean_arm2 = 72.3/3.5
 ```
 
 
-In what follows, we simulated the trial using the estimated mean in the control arm in the original study using three allocation strategies -namely, equal allocation (1:...:1), square root of $k$ (1:...:$\sqrt(k)$), and the proposed optimal allocations-, and according to three different trial designs:
 
-  (1) Design with one period only (that is, multi-arm design)
-  (2) Design with two periods (arm 2 starts later, but arms 1 and 2 finish at the same time)
-  (3) Design with three periods (arm 2 starts later and finishes after arm 1 does)
-
-  
-For comparative purposes, in this case study, we suppose total sample size of $N=80$ and smaller effect sizes.  
 
 ## Design 1: multi-arm design
 
