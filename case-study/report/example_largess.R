@@ -29,3 +29,4 @@ knitr::kable(res3_sqrt, format = "markdown")
 res3_opt = do.call(rbind.data.frame, models_cc(data = db3_opt$data) )
 res3_opt$width_ci = res3_opt$upper_ci  - res3_opt$lower_ci 
 knitr::kable(res3_opt, format = "markdown")
+
