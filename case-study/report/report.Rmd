@@ -114,11 +114,13 @@ knitr::kable(db1_opt_ss, format = "markdown", caption = c("Sample sizes per peri
 Comparing groups when using 1:1 allocation
 ```{r}
 res1_one = do.call(rbind.data.frame, models_cc(data = db1_one$data) )
+res1_one$width_ci = res1_one$upper_ci  - res1_one$lower_ci  
 knitr::kable(res1_one, format = "markdown") 
 ```
 Comparing groups when using $\sqrt(k)$-allocation (and thus optimal allocations)
 ```{r}
 res1_opt = do.call(rbind.data.frame, models_cc(data = db1_opt$data) )
+res1_opt$width_ci = res1_opt$upper_ci  - res1_opt$lower_ci  
 knitr::kable(res1_opt, format = "markdown")
 ```
 
@@ -170,16 +172,19 @@ knitr::kable(db2_opt_ss, format = "markdown", caption = c("Sample sizes per peri
 Comparing groups when using 1:1 allocation
 ```{r}
 res2_one = do.call(rbind.data.frame, models_cc(data = db2_one$data) )
+res2_one$width_ci = res2_one$upper_ci  - res2_one$lower_ci  
 knitr::kable(res2_one, format = "markdown") 
 ```
 Comparing groups when using $\sqrt(k)$-allocation
 ```{r}
 res2_sqrt = do.call(rbind.data.frame, models_cc(data = db2_sqrt$data) )
+res2_sqrt$width_ci = res2_sqrt$upper_ci  - res2_sqrt$lower_ci  
 knitr::kable(res2_sqrt, format = "markdown")
 ```
 Comparing groups when using the optimal allocations
 ```{r}
 res2_opt = do.call(rbind.data.frame, models_cc(data = db2_opt$data) )
+res2_opt$width_ci = res2_opt$upper_ci  - res2_opt$lower_ci  
 knitr::kable(res2_opt, format = "markdown")
 ```
 
@@ -228,16 +233,19 @@ knitr::kable(db3_opt_ss, format = "markdown", caption = c("Sample sizes per peri
 Comparing groups when using 1:1 allocation
 ```{r}
 res3_one = do.call(rbind.data.frame, models_cc(data = db3_one$data) )
+res3_one$width_ci = res3_one$upper_ci  - res3_one$lower_ci 
 knitr::kable(res3_one, format = "markdown") 
 ```
 Comparing groups when using $\sqrt(k)$-allocation
 ```{r}
 res3_sqrt = do.call(rbind.data.frame, models_cc(data = db3_sqrt$data) )
+res3_sqrt$width_ci = res3_sqrt$upper_ci  - res3_sqrt$lower_ci 
 knitr::kable(res3_sqrt, format = "markdown")
 ```
 Comparing groups when using the optimal allocations
 ```{r}
 res3_opt = do.call(rbind.data.frame, models_cc(data = db3_opt$data) )
+res3_opt$width_ci = res3_opt$upper_ci  - res3_opt$lower_ci 
 knitr::kable(res3_opt, format = "markdown")
 ```
 
@@ -280,16 +288,19 @@ knitr::kable(db3_opt_ss, format = "markdown", caption = c("Sample sizes per peri
 Comparing groups when using 1:1 allocation
 ```{r}
 res3_one = do.call(rbind.data.frame, models_cc(data = db3_one$data) )
+res3_one$width_ci = res3_one$upper_ci  - res3_one$lower_ci 
 knitr::kable(res3_one, format = "markdown") 
 ```
 Comparing groups when using $\sqrt(k)$-allocation
 ```{r}
 res3_sqrt = do.call(rbind.data.frame, models_cc(data = db3_sqrt$data) )
+res3_sqrt$width_ci = res3_sqrt$upper_ci  - res3_sqrt$lower_ci 
 knitr::kable(res3_sqrt, format = "markdown")
 ```
 Comparing groups when using the optimal allocations
 ```{r}
 res3_opt = do.call(rbind.data.frame, models_cc(data = db3_opt$data) )
+res3_opt$width_ci = res3_opt$upper_ci  - res3_opt$lower_ci 
 knitr::kable(res3_opt, format = "markdown")
 ```
 

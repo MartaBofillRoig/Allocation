@@ -48,6 +48,7 @@ plot_trial(db$data$treatment)
 
 res_all = do.call(rbind.data.frame, models(data = db$data) )
 head(res_all)
+res_all$width_ci = res_all$upper_ci  - res_all$lower_ci  
 
 res_cc = do.call(rbind.data.frame, models_cc(data = db$data) )
 head(res)
