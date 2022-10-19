@@ -33,7 +33,7 @@ f=Vectorize(function(r1,r2) {
 # sim_designs()
 ##########################################
 
-sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
+sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",trend="stepwise",sl=0.2){
   
   r3 = 1-r1-r2
   
@@ -112,9 +112,19 @@ sim_designs <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2){
     )
   }
   
-  response = rnorm(Nsim,
-                   mean=means[treatment[1:Nsim]+1]+sw_trend(cj=1:Nsim, lambda=sl),
-                   sd=1) 
+  if(trend=="stepwise"){
+    
+    response = rnorm(Nsim,
+                     mean=means[treatment[1:Nsim]+1]+sw_trend(cj=period[1:Nsim], lambda=sl),
+                     sd=1) 
+    
+  }
+  if(trend=="linear"){
+    
+    response = rnorm(Nsim,
+                     mean=means[treatment[1:Nsim]+1]+linear_trend(j=1:Nsim, lambda=sl, sample_size=c(0,Nsim)),
+                     sd=1) 
+  }
   
   data = data.frame(response,treatment,period)
   if(r1==1){
