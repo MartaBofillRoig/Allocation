@@ -36,6 +36,7 @@ library(plyr)
 # devtools::install_github("pavlakrotka/NCC@v1.0")
 library(NCC)
 source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R")
+set.seed(4678)
 ```
 
 # Case Study
@@ -52,7 +53,7 @@ We illustrate the optimal allocations in platform trials by means of a  phase  I
 # N1=n_arm1
 
 # Sample sizes for the simulation 
-N = 80
+N = 92
 # N1 = round(N/3)
 # N2 = round(2*(N-N1)/3)
 # c(N1,N2,N-N1-N2)
@@ -84,9 +85,9 @@ mean_arm2 = 72.3/3.5
 In this case, we consider a design with one period only. The scheme of the trial over time is:
 
 ```{r, fig.align="center", fig.width=4, fig.height=4, fig.cap="Figure: Design 1: multi-arm design."}
-db1_one = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
-db1_sqrt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
-db1_opt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+db1_one = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one",sl=0)
+db1_sqrt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt",sl=0)
+db1_opt = sim_designs(r1=1,r2=0,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt",sl=0)
 plot_trial(db1_one$data$treatment) 
 ```
 
@@ -134,7 +135,7 @@ knitr::kable(res1_opt, format = "markdown")
 ## Design 2: two-period design
 
 ```{r}
-N = 80
+N = 92
 N1 = round(N/4)
 N2 = round(N-N1)
 c(N1,N2,N-N1-N2)
@@ -143,9 +144,9 @@ c(N1,N2,N-N1-N2)
 
 In this case, we consider a design with two periods. The scheme of the trial over time is:
 ```{r, fig.align="center", fig.width=4, fig.height=4, fig.cap="Figure: Design 2: two-period design."} 
-db2_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
-db2_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
-db2_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+db2_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one",sl=0)
+db2_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt",sl=0)
+db2_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt",sl=0)
 plot_trial(db2_one$data$treatment) 
 ```
 
@@ -206,9 +207,9 @@ Below we illustrate the scheme of the trial over time.
 
 ```{r, fig.align="center", fig.width=4, fig.height=4, fig.cap="Design 3: three-period design (r1=r3)."} 
 
-db3_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
-db3_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
-db3_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+db3_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one",sl=0)
+db3_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt",sl=0)
+db3_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt",sl=0)
 
 plot_trial(db3_opt$data$treatment) 
 
@@ -253,7 +254,7 @@ knitr::kable(res3_opt, format = "markdown")
 
 Suppose now that the size of the periods are:
 ```{r}
-# N = 80
+# N = 92
 N1 = round(N/3)
 N2 = round(2*(N-N1)/3)
 c(N1,N2,N-N1-N2) 
@@ -261,9 +262,9 @@ c(N1,N2,N-N1-N2)
 
 
 ```{r, fig.align="center", fig.width=4, fig.height=4, fig.cap="Design 3: three-period design (r1<r3)."}
-db3_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one")
-db3_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt")
-db3_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt")
+db3_one=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="one",sl=0)
+db3_sqrt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="sqrt",sl=0)
+db3_opt=sim_designs(r1=N1/N,r2=N2/N,mu0=mean_control,mu1=mean_arm1,mu2=mean_arm2,N=N,alloc="opt",sl=0)
 
 plot_trial(db3_opt$data$treatment) 
 
