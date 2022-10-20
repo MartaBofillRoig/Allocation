@@ -8,8 +8,8 @@
 
 rm(list = ls())
 
-setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
-# setwd("~/GitHub/Allocation/case-study")
+# setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
+setwd("~/GitHub/Allocation/case-study")
 
 
 library(tidyverse)
@@ -27,8 +27,8 @@ library(gt)
 ##########################################
 # Functions
 
-source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
-# source("~/GitHub/Allocation/case-study/aux_functions.R") #server
+# source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+source("~/GitHub/Allocation/case-study/aux_functions.R") #server
 
 ##########################################
 
@@ -59,13 +59,21 @@ mean_arm2 = 72.3/3.5
 # Simulations
 ##########################################
 
-# nsim=100000
-nsim=10
+nsim=100000
+# nsim=10
 
 set.seed(4561)
 df_res = data.frame(rt_a1=c(0),rt_a2=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),trend=c(0),H0=F)
 i=1
- 
+
+
+library(foreach)
+library(doParallel)
+
+#setup parallel backend to use many processors
+cores=detectCores()
+cl <- makeCluster(cores[1]-1) #not to overload your computer
+registerDoParallel(cl)
 
 ##########################################
 # design 3: three-period design (symmetric design)
@@ -457,8 +465,8 @@ df_res
 list_res_nsym_H0 = list(y_nsym,y_nsym_opt,y_nsym_sqrt)
 
 ##########################################
-# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/simstudy_results_3periods.RData") #local
-# save.image("~/GitHub/Allocation/case-study/simstudy_results_3periods.RData") #server
+# save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_3periods.RData") #local
+save.image("~/GitHub/Allocation/case-study/results/simstudy_results_3periods.RData") #server
 
 
 ##########################################
@@ -592,16 +600,7 @@ df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
              N=N,alloc="one",trend=0,H0=T)
 
-i=i+1
-
-# df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
-#              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-#              N=N,alloc="one",arm="a1",H0=T)
-# df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
-#                mu0=mean_control,mu1=mean_control,mu2=mean_control,
-#                N=N,alloc="one",arm="a2",H0=T)
-# 
-# i=i+2
+i=i+1 
 
 ##########################################
 # optimal allocation
@@ -629,16 +628,7 @@ df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
              N=N,alloc="opt",trend=0,H0=T)
 
-i=i+1
-
-# df_res[i,]=c(rt=e1_t1e,r1=N1/N,r2=N2/N,
-#              mu0=mean_control,mu1=6,mu2=6,
-#              N=N,alloc="opt",arm="a1",H0=T)
-# df_res[i+1,]=c(rt=e2_t1e,r1=N1/N,r2=N2/N,
-#                mu0=mean_control,mu1=6,mu2=6,
-#                N=N,alloc="opt",arm="a2",H0=T)
-# 
-# i=i+2
+i=i+1 
 
 ##########################################
 # sqrt k allocation
@@ -687,7 +677,11 @@ rm(y, y_opt, y_sqrt,
    e1_t1e, e2_t1e, i, mean_arm1, mean_arm2, mean_control, N, N1, N2, N3, 
    nsim)
 ##########################################
+
+#stop cluster
+stopCluster(cl)
+
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results.RData") #local
-# save.image("~/GitHub/Allocation/case-study/simstudy_results.RData") #server
+save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults.RData") #server
 
 
