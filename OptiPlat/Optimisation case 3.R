@@ -1,5 +1,6 @@
 library(nloptr)
 library(parallel)
+library(latex2exp)
 ###########Functions CC ###########################
 
 
@@ -20,9 +21,7 @@ optccr1=function(r1)
 { r2v=seq(0.5-r1,1-r1,ifelse(r1>0.45,0.002,0.01))
   r2v[1]=r2v[1]+10^(-10) # to avoid error
 #  res=t(optncc(r1,r2=r2v))
-  
 if(r1<0.5) res=suppressWarnings(matrix(pvec(r2v,optcc,r1=r1,mc.cores=1),byrow=T,ncol=4))
-  # res=suppressWarnings(matrix(pvec(r2v,optcc,r1=r1,mc.cores=max(1,detectCores()-2)),byrow=T,ncol=4))
   else res=cbind(c(r1,r1),c(0,.5),c(0,0),c(.5,.5))
 return(res)
 }
@@ -97,11 +96,11 @@ print(res)
 optr1=function(r1)
 { r2v=seq(0.5-r1,1-r1,ifelse(r1>0.45,0.002,0.01))
 #  res=t(optncc(r1,r2=r2v))
-if(r1<0.5) #res=suppressWarnings(matrix(pvec(r2v,optncc,r1=r1,mc.cores=max(1,detectCores()-2)),byrow=T,ncol=4))
-res=suppressWarnings(matrix(pvec(r2v,optcc,r1=r1,mc.cores=1),byrow=T,ncol=4))
+if(r1<0.5) res=suppressWarnings(matrix(pvec(r2v,optncc,r1=r1,mc.cores=1),byrow=T,ncol=4))
 else res=cbind(c(r1,r1),c(0,.5),c(0,0),c(.5,.5))
   return(res)
 }
+# mc.cores=max(1,detectCores()-2)
 
 ########################Plot###
 
