@@ -27,8 +27,8 @@ library(gt)
 ##########################################
 # Functions
 
-# source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
-source("~/GitHub/Allocation/case-study/aux_functions.R") #server
+source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+# source("~/GitHub/Allocation/case-study/aux_functions.R") #server
 
 ##########################################
 
@@ -36,18 +36,18 @@ source("~/GitHub/Allocation/case-study/aux_functions.R") #server
 # sim_designs(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",sl=0.2) 
 
 # Examples: 
-# r1=20/70;r2=30/70;mu0=0;mu1=1;mu2=1;N=70;alloc="opt"
-# db=sim_designs(r1=20/70,r2=30/70,mu0=0,mu1=1,mu2=1,N=70,alloc="one")
+r1=20/70;r2=30/70;mu0=0;mu1=1;mu2=1;N=70;alloc="opt"
+db=sim_designs(r1=20/70,r2=30/70,mu0=0,mu1=1,mu2=1,N=70,alloc="one")
 # head(db)
 # plot_trial(db$data$treatment)
 # 
 # db=sim_designs(r1=20/70,r2=30/70,mu0=0,mu1=1,mu2=1,N=70,alloc="opt")
 # head(db$data)
-# plot_trial(db$data$treatment)  
+# plot_trial(db$data$treatment)
 # 
-op <- fixmodel_cont(data=db$data,arm=2,alpha=0.025)
-summary(op$model)
-sepmodel_adj_cont(data=db$data,arm=2,alpha=0.025)
+# op <- fixmodel_cont(data=db$data,arm=2,alpha=0.025)# with using ncc
+# summary(op$model)
+# fixmodel_cont(data=db$data,arm=2,alpha=0.025,ncc=F)# without using ncc
 
 ##########################################
 # Case study
@@ -62,11 +62,11 @@ mean_arm2 = 72.3/3.5
 # Simulations
 ##########################################
 
-nsim=100000
-# nsim=10
+# nsim=100000
+nsim=10
 
 set.seed(4561)
-df_res = data.frame(rt_a1=c(0),rt_a2=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),trend=c(0),H0=F)
+df_res = data.frame(rt_a1=c(0),rt_a2=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),trend=c(0),H0=F,var_e1=c(0), var_e2=c(0))
 i=1
 
 
@@ -108,15 +108,19 @@ y1_t1e <- y_sym %>%
   select(reject_h0)  
 e1_t1e <- sum(y1_t1e)/nsim
 
+var_e1 <- mean((y_sym %>% filter(arm == "a1"))$var )
+
 y2_t1e <- y_sym %>% 
   filter(arm == "a2") %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e2 <- mean((y_sym %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="one",trend=0,H0=F) 
+             N=N,alloc="one",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2) 
 
 i=i+1
 
@@ -142,10 +146,13 @@ y2_t1e <- y_sym_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sym_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sym_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="opt",trend=0,H0=F)
+             N=N,alloc="opt",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -172,10 +179,13 @@ y2_t1e <- y_sym_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sym_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sym_sqrt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="sqrt",trend=0,H0=F)
+             N=N,alloc="sqrt",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -206,9 +216,13 @@ y2_t1e <- y_sym %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sym %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sym %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="one",trend=0,H0=T)
+             N=N,alloc="one",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -234,10 +248,13 @@ y2_t1e <- y_sym_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sym_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sym_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="opt",trend=0,H0=T)
+             N=N,alloc="opt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -264,9 +281,13 @@ y2_t1e <- y_sym_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sym_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sym_sqrt %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="sqrt",trend=0,H0=T)
+             N=N,alloc="sqrt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -307,10 +328,13 @@ y2_t1e <- y_nsym %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="one",trend=0,H0=F) 
+             N=N,alloc="one",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2) 
 
 i=i+1
 
@@ -336,10 +360,13 @@ y2_t1e <- y_nsym_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="opt",trend=0,H0=F)
+             N=N,alloc="opt",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -366,10 +393,13 @@ y2_t1e <- y_nsym_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym_sqrt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="sqrt",trend=0,H0=F)
+             N=N,alloc="sqrt",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -400,9 +430,13 @@ y2_t1e <- y_nsym %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="one",trend=0,H0=T)
+             N=N,alloc="one",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -428,10 +462,15 @@ y2_t1e <- y_nsym_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym_opt %>% filter(arm == "a2"))$var )
+
+
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="opt",trend=0,H0=T)
+             N=N,alloc="opt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -458,9 +497,13 @@ y2_t1e <- y_nsym_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_nsym_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_nsym_sqrt %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="sqrt",trend=0,H0=T)
+             N=N,alloc="sqrt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -469,7 +512,7 @@ list_res_nsym_H0 = list(y_nsym,y_nsym_opt,y_nsym_sqrt)
 
 ##########################################
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_3periods_withvar.RData") #local
-save.image("~/GitHub/Allocation/case-study/results/simstudy_results_3periods_withvar.RData") #server
+# save.image("~/GitHub/Allocation/case-study/results/simstudy_results_3periods_withvar.RData") #server
 
 
 ##########################################
@@ -505,9 +548,13 @@ y2_t1e <- y %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="one",trend=0,H0=F)
+             N=N,alloc="one",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -533,9 +580,13 @@ y2_t1e <- y_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_opt %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="opt",trend=0,H0=F)
+             N=N,alloc="opt",trend=0,H0=F,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -563,9 +614,13 @@ y2_t1e <- y_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sqrt %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=6,mu2=6,
-             N=N,alloc="sqrt",trend=0,H0=F)
+             N=N,alloc="sqrt",trend=0,H0=F, 
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -599,9 +654,13 @@ y2_t1e <- y %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="one",trend=0,H0=T)
+             N=N,alloc="one",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -627,9 +686,13 @@ y2_t1e <- y_opt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_opt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_opt %>% filter(arm == "a2"))$var )
+
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="opt",trend=0,H0=T)
+             N=N,alloc="opt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1 
 
@@ -656,10 +719,14 @@ y2_t1e <- y_sqrt %>%
   select(reject_h0) 
 e2_t1e <- sum(y2_t1e)/nsim
 
+var_e1 <- mean((y_sqrt %>% filter(arm == "a1"))$var )
+var_e2 <- mean((y_sqrt %>% filter(arm == "a2"))$var )
+
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
              mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="sqrt",trend=0,H0=T)
+             N=N,alloc="sqrt",trend=0,H0=T,
+             var_e1=var_e1, var_e2=var_e2)
 
 i=i+1
 
@@ -685,6 +752,6 @@ rm(y, y_opt, y_sqrt,
 stopCluster(cl)
 
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_withvar.RData") #local
-save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar.RData") #server
+# save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar.RData") #server
 
 

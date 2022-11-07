@@ -151,31 +151,42 @@ models <- function(data,alpha=0.025){
   
   # using concurrent controls only
   
-  ls_a1=sepmodel_adj_cont(data,arm=1,alpha=alpha)
-  ls_a1[[6]]<- "a1"
-  names(ls_a1)[[6]] <- "arm"
-  ls_a1[[7]] <- "cc"
-  names(ls_a1)[7] <- "model"
+  ls_a1=fixmodel_cont(data,arm=1,alpha=alpha,ncc=F)
+  ls_a1[[6]]<- vcov(summary(ls_a1$model))[2,2]
+  names(ls_a1)[[6]] <- "var"
   
-  ls_a2=sepmodel_adj_cont(data,arm=2,alpha=alpha)
-  ls_a2[[6]] <- "a2"
-  names(ls_a2)[[6]] <- "arm"
-  ls_a2[[7]] <- "cc"
-  names(ls_a2)[7] <- "model"
+  ls_a1[[7]]<- "a1"
+  names(ls_a1)[[7]] <- "arm"
+  ls_a1[[8]] <- "cc"
+  names(ls_a1)[8] <- "model"
+  
+  ls_a2=fixmodel_cont(data,arm=2,alpha=alpha,ncc=F)
+  ls_a2[[6]]<- vcov(summary(ls_a2$model))[3,3]
+  
+  ls_a2[[7]] <- "a2"
+  names(ls_a2)[[7]] <- "arm"
+  ls_a2[[8]] <- "cc"
+  names(ls_a2)[8] <- "model"
   
   # using concurrent and non-concurrent controls
   
   lf_a1=fixmodel_cont(data,arm=1,alpha=alpha)
-  lf_a1[[6]] <- "a1"
-  names(lf_a1)[[6]] <- "arm"
-  lf_a1[[7]] <- "ncc"
-  names(lf_a1)[7] <- "model"
+  lf_a1[[6]]<- vcov(summary(lf_a1$model))[2,2]
+  names(lf_a1)[[6]] <- "var"
+  
+  lf_a1[[7]] <- "a1"
+  names(lf_a1)[[7]] <- "arm"
+  lf_a1[[8]] <- "ncc"
+  names(lf_a1)[8] <- "model"
   
   lf_a2=fixmodel_cont(data,arm=2,alpha=alpha)
-  lf_a2[[6]] <- "a2"
-  names(lf_a2)[[6]] <- "arm"
-  lf_a2[[7]] <- "ncc"
-  names(lf_a2)[7] <- "model"
+  lf_a2[[6]]<- vcov(summary(lf_a2$model))[3,3]
+  names(lf_a2)[[6]] <- "var"
+  
+  lf_a2[[7]] <- "a2"
+  names(lf_a2)[[7]] <- "arm"
+  lf_a2[[8]] <- "ncc"
+  names(lf_a2)[8] <- "model"
   
   return(list(ls_a1,ls_a2,lf_a1,lf_a2))
 }
@@ -184,17 +195,19 @@ models_cc <- function(data,alpha=0.025){
   
   # using concurrent controls only
   
-  ls_a1=sepmodel_adj_cont(data,arm=1,alpha=alpha)
-  ls_a1[[6]]<- "a1"
-  names(ls_a1)[[6]] <- "arm"
-  # ls_a1[[7]] <- "cc"
-  # names(ls_a1)[7] <- "model" 
+  ls_a1=fixmodel_cont(data,arm=1,alpha=alpha,ncc=F)
+  ls_a1[[6]]<- vcov(summary(ls_a1$model))[2,2]
+  names(ls_a1)[[6]] <- "var"
   
-  ls_a2=sepmodel_adj_cont(data,arm=2,alpha=alpha)
-  ls_a2[[6]] <- "a2"
-  names(ls_a2)[[6]] <- "arm"
-  # ls_a2[[7]] <- "cc"
-  # names(ls_a2)[7] <- "model"  
+  ls_a1[[7]]<- "a1"
+  names(ls_a1)[[7]] <- "arm"   
+  
+  ls_a2=fixmodel_cont(data,arm=2,alpha=alpha,ncc=F)
+  ls_a2[[6]]<- vcov(summary(ls_a2$model))[3,3]
+  names(ls_a2)[[6]] <- "var"
+  
+  ls_a2[[7]] <- "a2"
+  names(ls_a2)[[7]] <- "arm" 
   
   return(list(ls_a1,ls_a2))
 }

@@ -8,8 +8,16 @@ summary(mod)
 sepmodel_adj_cont(data=db$data,arm=2,alpha=0.025) #model using cc only
 summary(sepmodel_adj_cont(data=db$data,arm=2,alpha=0.025)$model)
 
+fixmodel_cont(data=db$data,arm=2,alpha=0.025, ncc=F)
+mod_pkg <- summary(fixmodel_cont(data=db$data,arm=2,alpha=0.025, ncc=F)$model)
+
+
 vcov(mod)[3,3]
 vcov(mod)[2,2]
+
+vcov(mod_pkg)[3,3]
+vcov(mod_pkg)[2,2]
+
 
 se = (confint(mod)[3,1]-mod$coefficients[3])/qnorm(0.025)
 se^2
