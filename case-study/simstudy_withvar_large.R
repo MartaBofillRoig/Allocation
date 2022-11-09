@@ -81,7 +81,7 @@ registerDoParallel(cl)
 ##########################################
 # design 3: three-period design (symmetric design)
 ##########################################
-N = 92
+N = 1000
 N1 = round(N/3)
 N3 = round(N/3)
 N2 = N-N1-N3
@@ -297,7 +297,7 @@ list_res_sym_H0 = list(y_sym,y_sym_opt,y_sym_sqrt)
 ##########################################
 # design 3: three-period design (non-symmetric design)
 ##########################################
-N = 92
+N = 1000
 N1 = round(N/3)
 N2 = round(2*(N-N1)/3)
 c(N1,N2,N-N1-N2)
@@ -519,7 +519,7 @@ list_res_nsym_H0 = list(y_nsym,y_nsym_opt,y_nsym_sqrt)
 # design 2: two-period design  
 ########################################## 
 
-N = 92
+N = 1000
 N1 = round(N/4)
 N2 = round(N-N1)
 c(N1,N2,N-N1-N2)
@@ -752,6 +752,6 @@ rm(y, y_opt, y_sqrt,
 stopCluster(cl)
 
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_withvar.RData") #local
-save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov.RData") #server
+save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov_lss.RData") #server
 
 
