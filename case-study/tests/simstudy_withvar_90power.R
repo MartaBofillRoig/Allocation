@@ -8,8 +8,8 @@
 
 rm(list = ls())
 
-setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
-# setwd("~/GitHub/Allocation/case-study")
+# setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
+setwd("~/GitHub/Allocation/case-study")
 
 
 library(tidyverse)
@@ -27,8 +27,8 @@ library(gt)
 ##########################################
 # Functions
 
-source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
-# source("~/GitHub/Allocation/case-study/aux_functions.R") #server
+# source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+source("~/GitHub/Allocation/case-study/aux_functions.R") #server
 
 ##########################################
 
@@ -58,9 +58,6 @@ mean_control = 17.3/3.5
 mean_arm1 = 66.2/3.5
 mean_arm2 = 72.3/3.5 
 
-mu1=5.66
-mu2=5.66
-
 ##########################################
 # Simulations
 ##########################################
@@ -82,222 +79,6 @@ cl <- makeCluster(cores[1]-1) #not to overload your computer
 registerDoParallel(cl)
 
 ##########################################
-# multi-arm design: one-period design
-##########################################
-N = 92
-N1 = N
-N3 = 0
-N2 = N-N1-N3
-c(N1,N2,N-N1-N2)
-
-
-
-##########################################
-# Power comparison
-##########################################
-# 1:1 allocation
-y_mams = rdply(nsim,
-               do.call(rbind.data.frame,
-                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                    N=N,alloc="one",sl=0)$data
-                       )
-               )
-)  
-
-# t1e / power
-y1_t1e <- y_mams %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-var_e1 <- mean((y_mams %>% filter(arm == "a1"))$var )
-
-y2_t1e <- y_mams %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e2 <- mean((y_mams %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
-             N=N,alloc="one",trend=0,H0=F,
-             var_e1=var_e1, var_e2=var_e2) 
-
-i=i+1
-
-##########################################
-# optimal allocation
-y_mams_opt = rdply(nsim,
-                   do.call(rbind.data.frame,
-                           models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                        mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                        N=N,alloc="opt",sl=0)$data
-                           )
-                   )
-) 
-
-# t1e / power
-y1_t1e <- y_mams_opt %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-y2_t1e <- y_mams_opt %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e1 <- mean((y_mams_opt %>% filter(arm == "a1"))$var )
-var_e2 <- mean((y_mams_opt %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
-             N=N,alloc="opt",trend=0,H0=F,
-             var_e1=var_e1, var_e2=var_e2)
-
-i=i+1 
-
-##########################################
-# sqrt k allocation
-
-y_mams_sqrt = rdply(nsim,
-                    do.call(rbind.data.frame,
-                            models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                         mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                         N=N,alloc="sqrt",sl=0)$data
-                            )
-                    )
-) 
-
-# t1e / power
-y1_t1e <- y_mams_sqrt %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-y2_t1e <- y_mams_sqrt %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e1 <- mean((y_mams_sqrt %>% filter(arm == "a1"))$var )
-var_e2 <- mean((y_mams_sqrt %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
-             N=N,alloc="sqrt",trend=0,H0=F,
-             var_e1=var_e1, var_e2=var_e2)
-
-i=i+1
-
-list_res_mams_H1 = list(y_mams,y_mams_opt,y_mams_sqrt)
-
-##########################################
-##########################################
-# T1E comparison
-##########################################
-# 1:1 allocation
-y_mams = rdply(nsim,
-               do.call(rbind.data.frame,
-                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                    mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                    N=N,alloc="one",sl=0)$data
-                       )
-               )
-) 
-
-# t1e / power
-y1_t1e <- y_mams %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-y2_t1e <- y_mams %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e1 <- mean((y_mams %>% filter(arm == "a1"))$var )
-var_e2 <- mean((y_mams %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="one",trend=0,H0=T,
-             var_e1=var_e1, var_e2=var_e2)
-
-i=i+1 
-
-##########################################
-# optimal allocation
-y_mams_opt = rdply(nsim,
-                   do.call(rbind.data.frame,
-                           models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                        mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                        N=N,alloc="opt",sl=0)$data
-                           )
-                   )
-) 
-
-# t1e / power
-y1_t1e <- y_mams_opt %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-y2_t1e <- y_mams_opt %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e1 <- mean((y_mams_opt %>% filter(arm == "a1"))$var )
-var_e2 <- mean((y_mams_opt %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="opt",trend=0,H0=T,
-             var_e1=var_e1, var_e2=var_e2)
-
-i=i+1 
-
-##########################################
-# sqrt k allocation
-
-y_mams_sqrt = rdply(nsim,
-                    do.call(rbind.data.frame,
-                            models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                         mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                         N=N,alloc="sqrt",sl=0)$data
-                            )
-                    )
-) 
-
-# t1e / power
-y1_t1e <- y_mams_sqrt %>% 
-  filter(arm == "a1") %>%
-  select(reject_h0)  
-e1_t1e <- sum(y1_t1e)/nsim
-
-y2_t1e <- y_mams_sqrt %>% 
-  filter(arm == "a2") %>%
-  select(reject_h0) 
-e2_t1e <- sum(y2_t1e)/nsim
-
-var_e1 <- mean((y_mams_sqrt %>% filter(arm == "a1"))$var )
-var_e2 <- mean((y_mams_sqrt %>% filter(arm == "a2"))$var )
-
-df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mean_control,mu2=mean_control,
-             N=N,alloc="sqrt",trend=0,H0=T,
-             var_e1=var_e1, var_e2=var_e2)
-
-i=i+1 
-
-df_res
-list_res_mams_H0 = list(y_mams,y_mams_opt,y_mams_sqrt)
-
-##########################################
 # design 3: three-period design (symmetric design)
 ##########################################
 N = 92
@@ -315,7 +96,7 @@ c(N1,N2,N-N1-N2)
 y_sym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                               mu0=mean_control,mu1=mu1,mu2=mu2,
+                                               mu0=mean_control,mu1=6,mu2=6,
                                                N=N,alloc="one",sl=0)$data
                   )
           )
@@ -337,7 +118,7 @@ e2_t1e <- sum(y2_t1e)/nsim
 var_e2 <- mean((y_sym %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="one",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2) 
 
@@ -348,7 +129,7 @@ i=i+1
 y_sym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                   mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                   mu0=mean_control,mu1=6,mu2=6,
                                                    N=N,alloc="opt",sl=0)$data
                       )
               )
@@ -369,7 +150,7 @@ var_e1 <- mean((y_sym_opt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_sym_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="opt",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -381,7 +162,7 @@ i=i+1
 y_sym_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                    mu0=mean_control,mu1=6,mu2=6,
                                                     N=N,alloc="sqrt",sl=0)$data
                        )
                )
@@ -402,7 +183,7 @@ var_e1 <- mean((y_sym_sqrt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_sym_sqrt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="sqrt",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -530,7 +311,7 @@ c(N1,N2,N-N1-N2)
 y_nsym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                               mu0=mean_control,mu1=mu1,mu2=mu2,
+                                               mu0=mean_control,mu1=6,mu2=6,
                                                N=N,alloc="one",sl=0)$data
                   )
           )
@@ -551,7 +332,7 @@ var_e1 <- mean((y_nsym %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_nsym %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="one",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2) 
 
@@ -562,7 +343,7 @@ i=i+1
 y_nsym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                   mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                   mu0=mean_control,mu1=6,mu2=6,
                                                    N=N,alloc="opt",sl=0)$data
                       )
               )
@@ -583,7 +364,7 @@ var_e1 <- mean((y_nsym_opt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_nsym_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e, r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="opt",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -595,7 +376,7 @@ i=i+1
 y_nsym_sqrt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                   mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                   mu0=mean_control,mu1=6,mu2=6,
                                                    N=N,alloc="sqrt",sl=0)$data
                       )
               )
@@ -616,7 +397,7 @@ var_e1 <- mean((y_nsym_sqrt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_nsym_sqrt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="sqrt",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -750,7 +531,7 @@ c(N1,N2,N-N1-N2)
 y = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                               mu0=mean_control,mu1=mu1,mu2=mu2,
+                                               mu0=mean_control,mu1=6,mu2=6,
                                                N=N,alloc="one",sl=0)$data
                   )
           )
@@ -771,7 +552,7 @@ var_e1 <- mean((y %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="one",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -782,7 +563,7 @@ i=i+1
 y_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                   mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                   mu0=mean_control,mu1=6,mu2=6,
                                                    N=N,alloc="opt",sl=0)$data
                       )
               )
@@ -803,7 +584,7 @@ var_e1 <- mean((y_opt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_opt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="opt",trend=0,H0=F,
              var_e1=var_e1, var_e2=var_e2)
 
@@ -816,7 +597,7 @@ i=i+1
 y_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
-                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
+                                                    mu0=mean_control,mu1=6,mu2=6,
                                                     N=N,alloc="sqrt",sl=0)$data
                        )
                )
@@ -837,7 +618,7 @@ var_e1 <- mean((y_sqrt %>% filter(arm == "a1"))$var )
 var_e2 <- mean((y_sqrt %>% filter(arm == "a2"))$var )
 
 df_res[i,]=c(rt_a1=e1_t1e,rt_a2=e2_t1e,r1=N1/N,r2=N2/N,
-             mu0=mean_control,mu1=mu1,mu2=mu2,
+             mu0=mean_control,mu1=6,mu2=6,
              N=N,alloc="sqrt",trend=0,H0=F, 
              var_e1=var_e1, var_e2=var_e2)
 

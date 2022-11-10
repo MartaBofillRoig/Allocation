@@ -17,7 +17,7 @@ The following scripts are included in this repository:
 - **case2_ncc.nb**: Computations on case 2 using non-concurrent controls. Two-period trial design assuming fixed sample sizes in period 1 and 2.
 - **case2_lagrange_ncc.nb**: Computations on case 2 using non-concurrent controls with Lagrange Multipliers. Two-period trial design assuming fixed sample sizes in period 1 and 2, assuming equal allocations in period 1 (that is, r01=r11).
 
-## Numerical examples and simulation study
+## Numerical examples 
 
 To run some numerical examples locally, you can install the **shiny** package in R, and
 use the function `runGitHub()` to run our shinyapp `OptiPlat`:
@@ -26,6 +26,12 @@ use the function `runGitHub()` to run our shinyapp `OptiPlat`:
 if (!require('shiny')) install.packages("shiny")
 shiny::runGitHub("Allocation", "MartaBofillRoig", subdir = "OptiPlat")
 ```
+
+## Case study and simulation study
+
+The scripts to reproduce the case study are to be found in the folder _case-study_.
+
+- **casestudy_tables.R** reproduces the tables in the supplementary material.
 
 ## Extra materials
 

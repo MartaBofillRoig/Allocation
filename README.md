@@ -20,7 +20,7 @@ The following scripts are included in this repository:
     design assuming fixed sample sizes in period 1 and 2, assuming equal
     allocations in period 1 (that is, r01=r11).
 
-## Numerical examples and simulation study
+## Numerical examples
 
 To run some numerical examples locally, you can install the **shiny**
 package in R, and use the function `runGitHub()` to run our shinyapp
@@ -30,6 +30,11 @@ package in R, and use the function `runGitHub()` to run our shinyapp
 if (!require('shiny')) install.packages("shiny")
 shiny::runGitHub("Allocation", "MartaBofillRoig", subdir = "OptiPlat")
 ```
+
+## Case study and simulation study
+
+The scripts to reproduce the case study are to be found in the folder
+*case-study*.
 
 ## Extra materials
 
