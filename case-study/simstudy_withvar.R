@@ -8,8 +8,8 @@
 
 rm(list = ls())
 
-setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
-# setwd("~/GitHub/Allocation/case-study")
+# setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
+setwd("~/GitHub/Allocation/case-study")
 
 
 library(tidyverse)
@@ -27,8 +27,8 @@ library(gt)
 ##########################################
 # Functions
 
-source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
-# source("~/GitHub/Allocation/case-study/aux_functions.R") #server
+# source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+source("~/GitHub/Allocation/case-study/aux_functions.R") #server
 
 ##########################################
 
@@ -971,6 +971,6 @@ rm(y, y_opt, y_sqrt,
 stopCluster(cl)
 
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_withvar.RData") #local
-save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov.RData") #server
+save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov_pwadj.RData") #server
 
 
