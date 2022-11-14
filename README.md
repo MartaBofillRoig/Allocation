@@ -36,6 +36,14 @@ shiny::runGitHub("Allocation", "MartaBofillRoig", subdir = "OptiPlat")
 The scripts to reproduce the case study are to be found in the folder
 *case-study*.
 
+-   **simstudy.R** and **simstudy_timetrends.R** simulate the considered
+    trials without and with time trends, respectively.
+-   **simresults.R** analyses the simulation results.
+-   **casestudy_tables.R** reproduces the tables in the supplementary
+    material.
+-   **aux_functions.R** includes auxiliar functions to carry out the
+    simulations.
+
 ## Extra materials
 
 The folder *Slides* contains the code to obtain the plots used for the
