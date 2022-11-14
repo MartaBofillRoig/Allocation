@@ -971,6 +971,6 @@ rm(y, y_opt, y_sqrt,
 stopCluster(cl)
 
 # save.image("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/results/simstudy_results_withvar.RData") #local
-save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov_pwadj_timetreds.RData") #server
+save.image("~/GitHub/Allocation/case-study/results/simstudy_completeresults_withvar_nov_pwadj_timetrends.RData") #server
 
 
