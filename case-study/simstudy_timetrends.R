@@ -68,7 +68,7 @@ mu2=5.66
 nsim=100000
 # nsim=10
 
-set.seed(2514)
+set.seed(569)
 df_res = data.frame(rt_a1=c(0),rt_a2=c(0),r1=c(0),r2=c(0),mu0=c(0),mu1=c(0),mu2=c(0),N=c(0),alloc=c("one"),trend=c(0),H0=F,var_e1=c(0), var_e2=c(0))
 i=1
 
@@ -100,7 +100,7 @@ y_mams = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                    N=N,alloc="one",sl=0.1)$data
+                                                    N=N,alloc="one",sl=0.25)$data
                        )
                )
 )  
@@ -133,7 +133,7 @@ y_mams_opt = rdply(nsim,
                    do.call(rbind.data.frame,
                            models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                         mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                        N=N,alloc="opt",sl=0.1)$data
+                                                        N=N,alloc="opt",sl=0.25)$data
                            )
                    )
 ) 
@@ -166,7 +166,7 @@ y_mams_sqrt = rdply(nsim,
                     do.call(rbind.data.frame,
                             models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                          mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                         N=N,alloc="sqrt",sl=0.1)$data
+                                                         N=N,alloc="sqrt",sl=0.25)$data
                             )
                     )
 ) 
@@ -203,7 +203,7 @@ y_mams = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                    N=N,alloc="one",sl=0.1)$data
+                                                    N=N,alloc="one",sl=0.25)$data
                        )
                )
 ) 
@@ -235,7 +235,7 @@ y_mams_opt = rdply(nsim,
                    do.call(rbind.data.frame,
                            models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                         mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                        N=N,alloc="opt",sl=0.1)$data
+                                                        N=N,alloc="opt",sl=0.25)$data
                            )
                    )
 ) 
@@ -268,7 +268,7 @@ y_mams_sqrt = rdply(nsim,
                     do.call(rbind.data.frame,
                             models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                          mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                         N=N,alloc="sqrt",sl=0.1)$data
+                                                         N=N,alloc="sqrt",sl=0.25)$data
                             )
                     )
 ) 
@@ -316,7 +316,7 @@ y_sym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mu1,mu2=mu2,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 )  
@@ -349,7 +349,7 @@ y_sym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -382,7 +382,7 @@ y_sym_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                    N=N,alloc="sqrt",sl=0.1)$data
+                                                    N=N,alloc="sqrt",sl=0.25)$data
                        )
                )
 ) 
@@ -419,7 +419,7 @@ y_sym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 ) 
@@ -451,7 +451,7 @@ y_sym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -484,7 +484,7 @@ y_sym_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                    N=N,alloc="sqrt",sl=0.1)$data
+                                                    N=N,alloc="sqrt",sl=0.25)$data
                        )
                )
 ) 
@@ -531,7 +531,7 @@ y_nsym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mu1,mu2=mu2,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 )  
@@ -563,7 +563,7 @@ y_nsym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -596,7 +596,7 @@ y_nsym_sqrt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                   N=N,alloc="sqrt",sl=0.1)$data
+                                                   N=N,alloc="sqrt",sl=0.25)$data
                       )
               )
 ) 
@@ -633,7 +633,7 @@ y_nsym = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 )  
@@ -665,7 +665,7 @@ y_nsym_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -700,7 +700,7 @@ y_nsym_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                    N=N,alloc="sqrt",sl=0.1)$data
+                                                    N=N,alloc="sqrt",sl=0.25)$data
                        )
                )
 ) 
@@ -751,7 +751,7 @@ y = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mu1,mu2=mu2,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 )  
@@ -783,7 +783,7 @@ y_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -817,7 +817,7 @@ y_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mu1,mu2=mu2,
-                                                    N=N,alloc="sqrt",sl=0.1)$data
+                                                    N=N,alloc="sqrt",sl=0.25)$data
                        )
                )
 ) 
@@ -855,7 +855,7 @@ y = rdply(nsim,
           do.call(rbind.data.frame,
                   models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                               N=N,alloc="one",sl=0.1)$data
+                                               N=N,alloc="one",sl=0.25)$data
                   )
           )
 ) 
@@ -889,7 +889,7 @@ y_opt = rdply(nsim,
               do.call(rbind.data.frame,
                       models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                    mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                   N=N,alloc="opt",sl=0.1)$data
+                                                   N=N,alloc="opt",sl=0.25)$data
                       )
               )
 ) 
@@ -922,7 +922,7 @@ y_sqrt = rdply(nsim,
                do.call(rbind.data.frame,
                        models_cc(data = sim_designs(r1=N1/N,r2=N2/N,
                                                     mu0=mean_control,mu1=mean_control,mu2=mean_control,
-                                                    N=N,alloc="sqrt",sl=0.1)$data
+                                                    N=N,alloc="sqrt",sl=0.25)$data
                        )
                )
 ) 
