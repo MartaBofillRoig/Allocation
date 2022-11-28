@@ -11,7 +11,9 @@ This repository contains the main code to reproduce the results of the paper "Op
 
 ## Derivation of optimal allocations
 
-The following *Mathematical* notebook files are included in this repository:
+The files to follow the derivations in the paper and obtain the optimal allocations are in the folder *optimisation*. 
+
+The following *Mathematica* notebook files are included in this repository:
 
 - **case3_b_lagrange.nb**: Computations on case 3  with Lagrange Multipliers. Three-period trial design assuming fixed sample sizes in period 1 and 2
 - **case3_ncc.nb**: Computations on case 3 for a three-preiod trial using non-concurrent controls.

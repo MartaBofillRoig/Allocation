@@ -7,7 +7,10 @@ Ekkehard Glimm, Tobias Mielke, and Martin Posch.
 
 ## Derivation of optimal allocations
 
-The following *Mathematical* notebook files are included in this
+The files to follow the derivations in the paper and obtain the optimal
+allocations are in the folder *optimisation*.
+
+The following *Mathematica* notebook files are included in this
 repository:
 
 -   **case3_b\_lagrange.nb**: Computations on case 3 with Lagrange
