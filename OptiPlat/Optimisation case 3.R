@@ -134,8 +134,8 @@ lwd=2
 plot(results$r2,results$r02,type="l",
      ylim=c(0,.5),xlim=c(0,1),
      col="white",
-     xlab=TeX("$r_{2}$"),
-     ylab="",
+     xlab=TeX(paste("Proportion of observations in Period 2 ","$\\,(r_2)$",sep="")),
+     ylab="Allocation ratios",
      main="Optimal Allocation Ratios in Period 2",lty=2
      )#main=TeX(paste("$r_{1}=$",r1,sep=""))
 abline(h=0,col="grey")
@@ -151,20 +151,26 @@ lines(results$r2,results$r22,col="blue",lty=2,lwd=lwd)
 lines(results$r2,results$r02,col="black",lty=2,lwd=lwd)
 }
 par( xpd=T)
-legend("bottom", inset=c(0,-0.45), 
+legend("bottom", inset=c(0,-0.52), 
        legend=c("Control","Treatment 1","Treatment 2"), 
        col=c("black","red","blue"),lty=1,bty="n",ncol=3,lwd=lwd)
-legend("bottom", inset=c(0,-0.54), 
+legend("bottom", inset=c(0,-0.66), 
        legend=c("Concurrent","Non-Concurrent"), 
        col=c("black","black"),lty=c(1,2),bty="n",ncol=2,lwd=lwd)
 par( xpd=F)
 plot(results$r2,results$se,type="l",
      ylim=c(-30,0),xlim=c(0,1),
      col="white",
-     xlab=TeX("$r_{2}$"),ylab="Percent",
+     xlab=TeX(paste("Proportion of observations in Period 2 ","$\\,(r_2)$",sep="")),
+     ylab="Percent decrease in variance ",
      main="Decrease in Variance Compared to Separate Trials",lty=2)
 abline(h=-(1-optse/8)*100,col="grey")
 abline(h=0,col="grey")
+par( xpd=T)
+legend("bottom", inset=c(0,-0.5), 
+       legend=c("Concurrent","Non-Concurrent"), 
+       col=c("black","black"),lty=c(1,2),bty="n",ncol=2,lwd=lwd)
+par( xpd=F)
 if (CC) lines(resultscc$r2,-(1-resultscc$se/8)*100,col="black",lty=1,lwd=lwd)
 if (NCC) lines(results$r2,-(1-results$se/8)*100,col="black",lty=2,lwd=lwd)
 par(pty="m")
@@ -177,5 +183,4 @@ if(savepdf) dev.off()
 #plncc(0.3,savepdf=T)
 #plncc(0.4,savepdf=T)
 #plncc(0.49,savepdf=T)
-
 

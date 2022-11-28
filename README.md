@@ -16,7 +16,7 @@ repository:
 -   **case3_b\_lagrange.nb**: Computations on case 3 with Lagrange
     Multipliers. Three-period trial design assuming fixed sample sizes
     in period 1 and 2
--   **case3_ncc.nb**: Computations on case 3 for a three-preiod trial
+-   **case3_ncc.nb**: Computations on case 3 for a three-period trial
     using non-concurrent controls.
 -   **case2_ncc.nb**: Computations on case 2 using non-concurrent
     controls. Two-period trial design assuming fixed sample sizes in
