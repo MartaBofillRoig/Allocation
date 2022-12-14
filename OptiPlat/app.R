@@ -19,7 +19,7 @@ ui <- fluidPage(
         sidebarPanel(
           p("This app computes optimal allocation ratios in Period 2 of a platform trial with two experimental and one control arm.
             In Periods 1 and 2 the optimal allocation is in all cases 1:1 allocation."),
-          p(HTML(paste("For details see ",tags$a(href="https://martabofillroig.github.io/", "Bofill et al. (2022)")),sep="")),
+          p(HTML(paste("For details see ",tags$a(href="https://github.com/MartaBofillRoig/Allocation", "Bofill Roig et al. (2022)")),sep="")),
          # p(HTML(paste(tags$em("r"),tags$sub("2"),".... fraction of observations in period 2", sep = ""))),
           br(),
             sliderInput("r1",
