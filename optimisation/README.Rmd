@@ -7,9 +7,6 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This repository contains the main code to derive the optimal allocations and reproduce the figures of the paper.
-
-
 The following *Mathematica* notebook files are included in this repository:
 
 - **suppmat-CC.nb**: Computation on designs with concurrent controls only.
@@ -25,7 +22,7 @@ To reproduce the plots in the paper, we also included the following R scripts:
 - **allocation_var_optimize_case2_ncc.R**: to plot Figure 5 in the paper but only for optimal allocations for trials with non-concurrent controls
 - **allocation_var_optimize_case2.R**: to plot Figure 5 in the paper but only for optimal allocations for trials with concurrent controls only 
 
-The R files consider the expressions obtained in the *Mathematica* notebook files in the folder _mathematica_rcode_. Note that these files use a different parametrisation. We consider: $r_{i,s} = n_{i,s} /N_s$, where $n_{i,s}$ is the sample size for arm i in the period s, and N_s is the total sample size in period s.  
+The R files consider the expressions obtained in the *Mathematica* notebook files in the folder _mathematica_rcode_. Note that these files use a different parametrisation. We consider: $r_{i,s} = n_{i,s} /N_s$, where $n_{i,s}$ is the sample size for arm $i$ in the period $s$, and $N_s$ is the total sample size in period $s$.  
 
 - **case3_b_lagrange.nb**: Computations on case 3  with Lagrange Multipliers. Three-period trial design assuming fixed sample sizes in period 1 and 2
 - **case3_ncc.nb**: Computations on case 3 for a three-period trial using non-concurrent controls.

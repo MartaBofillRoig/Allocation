@@ -1,9 +1,6 @@
 Derivation of optimal allocations
 ================
 
-This repository contains the main code to derive the optimal allocations
-and reproduce the figures of the paper.
-
 The following *Mathematica* notebook files are included in this
 repository:
 
@@ -37,8 +34,8 @@ scripts:
 The R files consider the expressions obtained in the *Mathematica*
 notebook files in the folder *mathematica_rcode*. Note that these files
 use a different parametrisation. We consider: $r_{i,s} = n_{i,s} /N_s$,
-where $n_{i,s}$ is the sample size for arm i in the period s, and N_s is
-the total sample size in period s.
+where $n_{i,s}$ is the sample size for arm $i$ in the period $s$, and
+$N_s$ is the total sample size in period $s$.
 
 -   **case3_b\_lagrange.nb**: Computations on case 3 with Lagrange
     Multipliers. Three-period trial design assuming fixed sample sizes
