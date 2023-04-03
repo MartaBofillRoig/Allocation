@@ -49,3 +49,5 @@ $N_s$ is the total sample size in period $s$.
     non-concurrent controls with Lagrange Multipliers. Two-period trial
     design assuming fixed sample sizes in period 1 and 2, assuming equal
     allocations in period 1.
+
+In the folder *comparisons*, we run some examples to check that the solutions using both parameterisations give the same results.

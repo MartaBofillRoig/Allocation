@@ -1,0 +1,258 @@
+---
+title: "Comparison optimal allocation solutions"
+# author: "Marta Bofill Roig"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+    code_folding: hide 
+    theme: flatly  
+    includes:
+      after_body: footer.html
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+``` 
+
+```{r}
+rm(list = ls())
+source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study/aux_functions.R") #local
+# setwd("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/case-study")#local
+# setwd("~/GitHub/Allocation/case-study")
+
+library(tidyverse)
+library(dplyr)
+library(plyr)
+library(NCC)
+library(mmtable2)
+library(gt)
+```
+
+
+```{r}
+# OPTIMAL ALLOCATION USING OLD NOTATION
+##########################################
+# Simulation function
+# modification of sim_designs() function
+# also returning the matrix (r_is)
+##########################################
+
+sim_designs_rr <- function(r1,r2,mu0,mu1,mu2,N,alloc="sqrt",trend="stepwise",sl=0.2){
+  
+  r3 = 1-r1-r2
+  
+  if(r1 == 1){
+    
+    if(alloc == "one"){
+      r22 <- r11 <- r01 <- r1/3
+      r02 <- r12 <- r23 <- r03 <- 0
+    }
+    if(alloc != "one"){ 
+      r01 <- sqrt(2)/(2+sqrt(2))
+      r22 <- r11 <- (1-r01)/2 
+      r02 <- r12 <- r23 <- r03 <- 0
+    }
+    
+  }else{
+    
+    if(alloc == "opt"){ 
+      
+      r11 <- r01 <- r1/2
+      
+      r2_opt <- f(r1=r1,r2=r2)
+      r02 <- r2_opt[3]
+      r12 <- r2_opt[4]
+      r22 <- r2_opt[5]
+      
+      r23 <- r03 <- r3/2
+      
+    }
+    if(alloc == "one"){
+      r11 <- r01 <- r1/2
+      r22 <- r12 <- r02 <- r2/3
+      r23 <- r03 <- r3/2
+    }
+    if(alloc == "sqrt"){
+      r11 <- r01 <- r1/2
+      r02 <- r2*sqrt(2)/(2+sqrt(2))
+      r22 <- r12 <- (r2-r02)/2
+      r23 <- r03 <- r3/2
+    }
+    
+  }
+  # c(r11,r01)
+  
+  n11 = round(r11*N)
+  n01 = round(r01*N)
+  
+  n22 = round(r22*N)
+  n12 = round(r12*N)
+  n02 = round(r02*N)
+  
+  n23 = round(r23*N)
+  n03 = round(r03*N)
+  
+  # c(r11,r01,r22,r12,r02,r23,r03)
+  # c(n11,n01,n22,n12,n02,n23,n03)
+  
+  means = c(mu0,mu1,mu2)
+  
+  treatment = c(
+    sample(c(rep(1,n11),rep(0,n01))),
+    sample(c(rep(2,n22),rep(1,n12),rep(0,n02))),
+    sample(c(rep(2,n23),rep(0,n03)))
+  )
+  
+  Nsim = length(treatment) 
+  
+  if(r1==1){
+    treatment = sample(treatment)
+    period = rep(1,Nsim)
+  }else{
+    period = c(
+      rep(1,n11+n01),
+      rep(2,n22+n12+n02),
+      rep(3,n23+n03)
+    )
+  }
+  
+  if(trend=="stepwise"){
+    
+    response = rnorm(Nsim,
+                     mean=means[treatment[1:Nsim]+1]+sw_trend(cj=period[1:Nsim], lambda=sl),
+                     sd=1) 
+    
+  }
+  if(trend=="linear"){
+    
+    response = rnorm(Nsim,
+                     mean=means[treatment[1:Nsim]+1]+linear_trend(j=1:Nsim, lambda=sl, sample_size=c(0,Nsim)),
+                     sd=1) 
+  }
+  
+  data = data.frame(response,treatment,period)
+  if(r1==1){
+    ss = matrix(c(n22,n11,n01,0,n12,n02,n23,0,n03), nrow=3)
+  }else{
+    ss = matrix(c(0,n11,n01,n22,n12,n02,n23,0,n03), nrow=3)
+  }
+  r_matrix = matrix(c(0,r11,r01,r22,r12,r02,r23,0,r03), nrow=3)
+  r_periods = c(r1,r2,r3)
+  return(list(data=data,ss=ss,r_matrix=r_matrix,r_periods=r_periods))
+}
+
+```
+
+```{r}
+# OPTIMAL ALLOCATION USING THE NEW NOTATION
+##########################################
+eq_p22 <- function(p22,r1=0.1,r2=0.8){(Power(-1 + p22,3)*(-1 + 2*r1))/((-1 + 2*p22)*(-2 + p22*(7 + p22*(-15 + p22*(19 + 2*p22*(-7 + 2*p22))))))-r2}
+
+f_p=Vectorize(function(r1,r2) { 
+  p22=uniroot(eq_p22,c(0,r2),r1=r1,r2=r2)$root
+  r22 = r2*p22
+  # p02 <- 1/(2-2*p22)
+  p02 <- 1/(2-2*p22)-p22
+  r02 <- p02*r2
+  
+  p12 <- 1-p02-p22
+  r12 <- p12*r2
+  # r12 <- r2- r02- r22
+  
+  sol=c(r1,r2,r22,r12,r02)
+  sol
+})
+```
+
+
+
+# Solutions case study
+
+## Design 3: three-period design (symmetric design)
+```{r}
+##########################################
+# Case study
+##########################################
+
+# original study - obtained means
+mean_control = 17.3/3.5
+mean_arm1 = 66.2/3.5
+mean_arm2 = 72.3/3.5 
+
+##########################################
+# design 3: three-period design (symmetric design)
+##########################################
+N = 92
+N1 = round(N/3)
+N3 = round(N/3)
+N2 = N-N1-N3
+c(N1,N2,N-N1-N2)
+alloc_str <- c("one","opt","sqrt")
+```
+
+Optimal allocation using the old parametrization
+```{r}
+m <- sim_designs_rr(r1=N1/N,r2=N2/N,
+                   mu0=mean_control,mu1=6,mu2=6,
+                   N=N,alloc=alloc_str[2],sl=0)
+  
+  rownames(m$r_matrix)  <- c("Arm 2", "Arm 1", "Control")
+  knitr::kable(m$r_matrix, format = "html", caption = paste(alloc_str[2]), 
+               col.names = c("Period 1", "Period 2", "Period 3"), 
+               row.names=T, 
+               digits=3)
+  
+  knitr::kable(t(m$r_periods),col.names = c("Period 1", "Period 2", "Period 3"))
+```
+
+
+Optimal allocation using the new parametrization
+```{r}  
+r_solutions <- f_p(r1=m$r_periods[1], r2=m$r_periods[2])
+# rownames(r_solutions[3:5])  <- c("Arm 2", "Arm 1", "Control")
+knitr::kable(r_solutions[3:5],col.names = c("Period 2"),row.names=T,digits=3)
+knitr::kable(t(c(r_solutions[1:2], 1-sum(r_solutions[1:2]))),col.names = c("Period 1", "Period 2", "Period 3"),digits=3) 
+```
+
+
+## Design 3: three-period design (non-symmetric design)
+```{r}
+##########################################
+# design 3: three-period design (non-symmetric design)
+##########################################
+N = 92
+N1 = round(N/3)
+N2 = round(2*(N-N1)/3)
+c(N1,N2,N-N1-N2)
+```
+Optimal allocation using the old parametrization
+```{r}
+m <- sim_designs_rr(r1=N1/N,r2=N2/N,
+                   mu0=mean_control,mu1=6,mu2=6,
+                   N=N,alloc=alloc_str[2],sl=0)
+  
+  rownames(m$r_matrix)  <- c("Arm 2", "Arm 1", "Control")
+  knitr::kable(m$r_matrix, format = "html", caption = paste(alloc_str[2]), 
+               col.names = c("Period 1", "Period 2", "Period 3"), 
+               row.names=T, 
+               digits=3)
+  
+  knitr::kable(t(m$r_periods),col.names = c("Period 1", "Period 2", "Period 3"),digits=3)
+```
+
+
+Optimal allocation using the new parametrization
+```{r}  
+r_solutions <- f_p(r1=m$r_periods[1], r2=m$r_periods[2])
+# rownames(r_solutions[3:5])  <- c("Arm 2", "Arm 1", "Control")
+knitr::kable(r_solutions[3:5],col.names = c("Period 2"),row.names=T,digits=3)
+knitr::kable(t(c(r_solutions[1:2], 1-sum(r_solutions[1:2]))),col.names = c("Period 1", "Period 2", "Period 3"),digits=3) 
+```
