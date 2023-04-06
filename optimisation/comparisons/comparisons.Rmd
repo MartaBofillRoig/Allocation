@@ -174,7 +174,7 @@ f_p=Vectorize(function(r1,r2) {
 
 
 
-# Solutions case study
+# Solutions case study - Concurrent controls only 
 
 ## Design 3: three-period design (symmetric design)
 ```{r}
@@ -256,3 +256,75 @@ r_solutions <- f_p(r1=m$r_periods[1], r2=m$r_periods[2])
 knitr::kable(r_solutions[3:5],col.names = c("Period 2"),row.names=T,digits=3)
 knitr::kable(t(c(r_solutions[1:2], 1-sum(r_solutions[1:2]))),col.names = c("Period 1", "Period 2", "Period 3"),digits=3) 
 ```
+
+# Numerical examples - Concurrent and non-concurrent controls 
+
+
+Optimal allocation using the old parametrization
+```{r}
+# code used in the shiny app
+source("C:/Users/mbofi/Dropbox/CeMSIIS/GitHub/Allocation/optimisation/comparisons/aux_functions_ncc.R")
+
+results <-optr1(r1=0.3)
+colnames(results)=c("r1","r2","r12","r22")
+results=as.data.frame(results)
+results$r02 <- 1- results$r12-results$r22
+results[c(51),]
+results[c(51),3:5]*0.7
+```
+
+
+Optimal allocation using the old parametrization
+```{r}
+
+sol_p22 <- function(r1,r2){
+  a <- Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),0.3333333333333333)
+  
+  b <- Power(-2 + a,2) + 6*(-4 + a)*r1 + 9*Power(r1,2)
+  
+  p22 <-  (-12 - sqrt(3)*sqrt((b*(-1 + r1))/a) + 12*r1 + sqrt(3)*sqrt(-(((-1 + r1)*(-12*sqrt(3)*a*Power(Power(a,3),0.16666666666666666)*sqrt(b*(-1 + r1))*r1 + 
+              b*(4 + 8*a + Power(a,2) - 12*(2 + a)*r1 + 9*Power(r1,2))))/(a*b))))/(12.*(-1 + r1))
+  
+  
+  r22 <- (12 + sqrt(3)*sqrt((b*(-1 + r1))/a) - 12*r1 - sqrt(3)*sqrt(-(((-1 + r1)*(-12*sqrt(3)*a*Power(Power(a,3),0.16666666666666666)*sqrt(b*(-1 + r1))*r1 + 
+              b*(4 + 8*a + Power(a,2) - 12*(2 + a)*r1 + 9*Power(r1,2))))/(a*b))))/12.
+
+  return(c(r22,p22))
+# return(p22)
+}
+
+
+
+
+
+sol_r22 <- function(r1,r2){
+  1 - r1 + sqrt(((-1 + r1)*(9*Power(r1,2) + 6*r1*(-4 + Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),
+              0.3333333333333333)) + Power(-2 + Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),
+             0.3333333333333333),2)))/Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),0.3333333333333333))/
+    (4.*sqrt(3)) - sqrt(-7.333333333333333 + 8*Power(-1 + r1,2) + (43*r1)/3. - 7*Power(r1,2) -
+      ((-1 + r1)*(4 - 24*r1 + 9*Power(r1,2)))/
+       (12.*Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),0.3333333333333333)) -
+      ((-1 + r1)*Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),0.3333333333333333))/12. +
+      (sqrt(3)*Power(-1 + r1,2)*r1*Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),0.16666666666666666))/
+       sqrt((-1 + r1)*(9*Power(r1,2) + 6*r1*(-4 + Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),
+               0.3333333333333333)) + Power(-2 + Power(8 + 36*r1 - 108*Power(r1,2) + 27*Power(r1,3) + 6*sqrt(3)*sqrt(r1*(16 - 72*r1 + 108*Power(r1,2) - 27*Power(r1,3))),
+              0.3333333333333333),2))))/2.
+}
+
+sol_r12 <- function(r1,r22){
+  (1 - r1 - sqrt(1 - r1 - 4*r22 + 4*r1*r22 + 4*Power(r22,2)))/2.
+}
+
+sol_p22(r1=.3,r2=.7)
+sol_r22(r1=.3,r2=.7)
+sol_r22(r1=.3,r2=.7)/.7
+# sol_r12(r1=.3,r22=sol_r22(r1=.3,r2=.7)[1])
+sol_r12(r1=.3,r22=sol_r22(r1=.3,r2=.7))
+```
+
+
+
+
+
+
+
