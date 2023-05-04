@@ -56,6 +56,9 @@ if (!require('shiny')) install.packages("shiny")
 shiny::runGitHub("Allocation", "MartaBofillRoig", subdir = "OptiPlat")
 ```
 
+The shiny app is also available at
+<https://sny.cemsiis.meduniwien.ac.at/~mp314/pt_allocation/>.
+
 ## Case study and simulation study
 
 The scripts to reproduce the case study are to be found in the folder
